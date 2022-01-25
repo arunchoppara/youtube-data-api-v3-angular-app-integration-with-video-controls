@@ -1,0 +1,74 @@
+<nav class="navbar navbar-light bg-light">
+  <div class="container">
+    <span class="navbar-brand display-h1 text-danger">{{title}}</span>
+  </div>
+</nav>
+
+<div class="container my-3">
+  <div class="row g-3">
+      <div class="col-md-3">
+        <label for="keyword" class="form-label">Search Keyword</label>
+        <input type="text" class="form-control" id="keyword" placeholde="Enter keyword.." [(ngModel)]="search.keyword">
+      </div>
+      <div class="col-md-3">
+        <label for="channelid" class="form-label">Channel ID</label>
+        <input type="text" class="form-control" id="channelid" placeholde="Enter channel ID.." [(ngModel)]="search.channelId">
+      </div>
+      <div class="col-md-3">
+        <label for="type" class="form-label">Resource Type</label>
+        <select id="type" class="form-select" [(ngModel)]="search.type">
+          <option selected value="">Choose Type</option>
+          <option value="channel">Channel</option>
+          <option value="playlist">Playlist</option>
+          <option value="video">Video</option>
+        </select>
+      </div>
+      <p>{{search | json}}</p>
+      <div class="col-md-3">
+        <label for="maxresults" class="form-label">Max. Results (1 to 50)</label>
+        <input type="number" class="form-control" id="maxresults" min="1" max="50" [(ngModel)]="search.maxResults">
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary mx-2" (click)="searchYoutube()">Search Youtube</button>
+      </div>
+  </div>
+</div>
+
+<div class="container">
+  <hr>
+  <div class="row" *ngIf="isLoading">
+    <div class="spinner-border text-danger" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <div class="row" *ngIf="!isLoading && error">
+    <p class="text-danger">Error: {{error}}</p>
+  </div>
+
+  <div class="row my-2 g-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4" *ngIf="!isLoading && response.length > 0">
+    <div class="col" *ngFor="let item of response; let i=index">
+        <div class="card h-100">
+            <div class="ratio ratio-4x3">
+              <ng-container *ngIf="!item.showVideo; else videoSection;">
+                <img [src]="item.thumbnail" class="img-responsive">
+              </ng-container>
+              <ng-template #videoSection>
+                <iframe class="embed-responsive-item" [src]="getVideoSource(item.id)" allowfullscreen></iframe>
+              </ng-template>            
+            </div>
+            <div class="card-body">
+                <h5 class="card-title text-truncate">{{item.title}}</h5>
+                <br>
+                <button class="btn btn-sm btn-primary mx-2" (click)="playOrPause(i)">
+                  <span *ngIf="!item.showVideo">Play</span>
+                  <span *ngIf="item.showVideo">Stop</span>
+                </button>
+            </div>
+            <div class="card-footer">
+              <span class="float-end">{{item.type}} | ID: {{item.id}}</span>
+          </div>
+        </div>
+    </div>
+  </div>
+
+</div>
