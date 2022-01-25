@@ -59,7 +59,7 @@ export class AppComponent implements OnInit {
 
   getVideoSource(id: string): SafeResourceUrl {
     if(id != ''){
-      const url = "https://www.youtube.com/embed/" + id + "?autoplay=1&mute=1";
+      const url = "https://www.youtube.com/embed/" + id + "?autoplay=1&mute=0&controls=0";
       return this.sanitizer.bypassSecurityTrustResourceUrl(url);
     }else{
       return '';
